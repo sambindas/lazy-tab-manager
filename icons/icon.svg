@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="24" fill="#1a1a2e"/>
+  <!-- Tab bar representation -->
+  <rect x="16" y="28" width="36" height="14" rx="5" fill="#e94560"/>
+  <rect x="56" y="28" width="36" height="14" rx="5" fill="#0f3460"/>
+  <rect x="96" y="28" width="16" height="14" rx="5" fill="#0f3460"/>
+  <!-- Browser body -->
+  <rect x="16" y="46" width="96" height="58" rx="5" fill="#16213e"/>
+  <!-- Z for lazy / sleep -->
+  <text x="38" y="90" font-family="Arial Black, sans-serif" font-weight="900" font-size="42" fill="#e94560">z</text>
+  <text x="58" y="78" font-family="Arial Black, sans-serif" font-weight="900" font-size="28" fill="#e94560" opacity="0.6">z</text>
+  <text x="74" y="68" font-family="Arial Black, sans-serif" font-weight="900" font-size="18" fill="#e94560" opacity="0.35">z</text>
+</svg>
