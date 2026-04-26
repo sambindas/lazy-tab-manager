@@ -16,7 +16,7 @@
   ],
 
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
 
   "action": {
@@ -53,12 +53,5 @@
       "resources": ["suspended.html", "suspended.js"],
       "matches": ["<all_urls>"]
     }
-  ],
-
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "lazy-tab-manager@extension",
-      "strict_min_version": "109.0"
-    }
-  }
+  ]
 }

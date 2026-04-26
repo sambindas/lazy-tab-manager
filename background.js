@@ -47,7 +47,8 @@ function getSuspendedPageUrl(originalUrl, title) {
     title: title || originalUrl,
     at: Date.now().toString(),
   });
-  return `${base}?${params.toString()}`;
+  // Use hash fragment — query strings can be stripped by browsers on extension pages
+  return `${base}#${params.toString()}`;
 }
 
 function isSuspendedPage(url) {
@@ -57,7 +58,8 @@ function isSuspendedPage(url) {
 
 function getOriginalUrlFromSuspended(url) {
   try {
-    return new URLSearchParams(new URL(url).search).get('url');
+    const hash = new URL(url).hash.slice(1); // remove leading #
+    return new URLSearchParams(hash).get('url');
   } catch (_) {
     return null;
   }
@@ -155,8 +157,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url) {
     if (!isSuspendedPage(tab.url)) {
       checkForDuplicate(tabId, tab.url);
+      markTabActive(tabId);
     }
-    markTabActive(tabId);
   }
 });
 

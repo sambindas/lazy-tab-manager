@@ -97,37 +97,6 @@
     <p class="meta" id="suspended-time"></p>
   </div>
 
-  <script>
-    const params = new URLSearchParams(location.search);
-    const url = params.get('url') || '';
-    const title = params.get('title') || url;
-    const suspendedAt = params.get('at');
-
-    // Update page title in browser tab
-    document.title = title ? `[Suspended] ${title}` : 'Tab Suspended';
-
-    document.getElementById('page-title').textContent = title || '(no title)';
-    document.getElementById('page-url').textContent = url || '(no URL)';
-
-    if (suspendedAt) {
-      const ts = parseInt(suspendedAt, 10);
-      if (!isNaN(ts)) {
-        const date = new Date(ts);
-        document.getElementById('suspended-time').textContent =
-          `Suspended at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-      }
-    }
-
-    const btn = document.getElementById('btn-restore');
-    if (url) {
-      // Use an anchor navigate — most reliable cross-browser on extension pages
-      btn.addEventListener('click', () => {
-        window.location.replace(url);
-      });
-    } else {
-      btn.disabled = true;
-      btn.textContent = 'No URL to restore';
-    }
-  </script>
+  <script src="suspended.js"></script>
 </body>
 </html>
