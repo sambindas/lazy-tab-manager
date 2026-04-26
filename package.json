@@ -13,6 +13,10 @@
     "build:chrome": "node build.js chrome",
     "build:firefox": "node build.js firefox",
     "zip:chrome": "node build.js chrome --zip",
-    "zip:firefox": "node build.js firefox --zip"
+    "zip:firefox": "node build.js firefox --zip",
+    "release:chrome": "node build.js chrome --zip --bump",
+    "release:firefox": "node build.js firefox --zip --bump",
+    "release:chrome:minor": "node build.js chrome --zip --bump minor",
+    "release:chrome:major": "node build.js chrome --zip --bump major"
   }
 }

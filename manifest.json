@@ -3,22 +3,18 @@
   "name": "Lazy Tab Manager",
   "version": "1.0.0",
   "description": "Detects duplicate tabs, suspends inactive tabs, and auto-closes long-inactive tabs.",
-
   "permissions": [
     "tabs",
     "storage",
     "alarms",
     "notifications"
   ],
-
   "host_permissions": [
     "<all_urls>"
   ],
-
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
-
   "action": {
     "default_popup": "popup.html",
     "default_title": "Lazy Tab Manager",
@@ -28,37 +24,35 @@
       "128": "icons/icon128.png"
     }
   },
-
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_start"
     }
   ],
-
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
   },
-
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-
   "web_accessible_resources": [
     {
-      "resources": ["suspended.html", "suspended.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "suspended.html",
+        "suspended.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
-  ],
-
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "lazy-tab-manager@extension",
-      "strict_min_version": "109.0"
-    }
-  }
+  ]
 }
