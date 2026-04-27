@@ -2,11 +2,32 @@
 
 let allEntries = [];
 
-const listEl    = document.getElementById('archive-list');
-const searchEl  = document.getElementById('search');
-const countBar  = document.getElementById('count-bar');
-const btnClear  = document.getElementById('btn-clear');
+const listEl   = document.getElementById('archive-list');
+const searchEl = document.getElementById('search');
+const countBar = document.getElementById('count-bar');
+const btnClear = document.getElementById('btn-clear');
 
+// ─── Safe message helper ──────────────────────────────────────────────────────
+function sendMsg(msg, timeoutMs = 5000) {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(null), timeoutMs);
+    try {
+      chrome.runtime.sendMessage(msg, (response) => {
+        clearTimeout(timer);
+        if (chrome.runtime.lastError) {
+          resolve(null);
+        } else {
+          resolve(response);
+        }
+      });
+    } catch (_) {
+      clearTimeout(timer);
+      resolve(null);
+    }
+  });
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 function timeAgo(ts) {
   const diff = Date.now() - ts;
   const m = Math.floor(diff / 60_000);
@@ -26,6 +47,7 @@ function escHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+// ─── Render ───────────────────────────────────────────────────────────────────
 function render(entries) {
   countBar.textContent = entries.length > 0
     ? `${entries.length} archived tab${entries.length !== 1 ? 's' : ''}`
@@ -42,7 +64,8 @@ function render(entries) {
 
   listEl.innerHTML = '';
 
-  entries.forEach((entry, idx) => {
+  entries.forEach((entry) => {
+    const realIndex = allEntries.indexOf(entry);
     const item = document.createElement('div');
     item.className = 'archive-item';
 
@@ -58,8 +81,8 @@ function render(entries) {
       </div>
       <div class="archive-meta">${timeAgo(entry.archivedAt)}</div>
       <div class="archive-actions">
-        <button class="btn-restore" data-url="${escHtml(entry.url)}">Restore</button>
-        <button class="btn-delete" data-index="${idx}" title="Remove from archive">✕</button>
+        <button class="btn-restore">Restore</button>
+        <button class="btn-delete" title="Remove from archive">✕</button>
       </div>
     `;
 
@@ -68,14 +91,11 @@ function render(entries) {
       chrome.runtime.sendMessage({ type: 'RESTORE_ARCHIVED', url: entry.url });
     });
 
-    item.querySelector('.btn-delete').addEventListener('click', (e) => {
+    item.querySelector('.btn-delete').addEventListener('click', async (e) => {
       e.stopPropagation();
-      // Find real index in allEntries
-      const realIndex = allEntries.indexOf(entry);
-      chrome.runtime.sendMessage({ type: 'DELETE_ARCHIVED', index: realIndex }, () => {
-        allEntries.splice(realIndex, 1);
-        render(filterEntries(searchEl.value));
-      });
+      await sendMsg({ type: 'DELETE_ARCHIVED', index: realIndex });
+      allEntries.splice(realIndex, 1);
+      render(filterEntries(searchEl.value));
     });
 
     listEl.appendChild(item);
@@ -90,27 +110,22 @@ function filterEntries(query) {
   );
 }
 
-function load() {
-  chrome.runtime.sendMessage({ type: 'GET_ARCHIVE' }, (archive) => {
-    if (chrome.runtime.lastError || !archive) {
-      render([]);
-      return;
-    }
-    allEntries = archive;
-    render(filterEntries(searchEl.value));
-  });
+async function load() {
+  const archive = await sendMsg({ type: 'GET_ARCHIVE' });
+  allEntries = Array.isArray(archive) ? archive : [];
+  render(filterEntries(searchEl.value));
 }
 
+// ─── Events ───────────────────────────────────────────────────────────────────
 searchEl.addEventListener('input', () => {
   render(filterEntries(searchEl.value));
 });
 
-btnClear.addEventListener('click', () => {
+btnClear.addEventListener('click', async () => {
   if (!confirm('Clear all archived tabs? This cannot be undone.')) return;
-  chrome.runtime.sendMessage({ type: 'CLEAR_ARCHIVE' }, () => {
-    allEntries = [];
-    render([]);
-  });
+  await sendMsg({ type: 'CLEAR_ARCHIVE' });
+  allEntries = [];
+  render([]);
 });
 
 load();

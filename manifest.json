@@ -13,7 +13,9 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "background.js"
+    "scripts": [
+      "background.js"
+    ]
   },
   "action": {
     "default_popup": "popup.html",
@@ -56,5 +58,11 @@
         "<all_urls>"
       ]
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "lazy-tab-manager@extension",
+      "strict_min_version": "109.0"
+    }
+  }
 }

@@ -181,20 +181,14 @@ async function saveToArchive(tabs) {
 }
 
 async function archiveAndCloseStaleTabs() {
-  const settings = await getSettings();
   const scored = await computeAllScores();
-  const staleMs = Math.min(settings.suspendMinutes, settings.closeMinutes) * 60_000;
-
-  const [activity] = await Promise.all([getTabActivity()]);
-  const now = Date.now();
-
-  // Stale = inactive longer than suspend threshold, not active, not pinned
   const tabs = await chrome.tabs.query({});
+
+  // Stale = debt score >= 100, not active, not pinned
   const staleTabs = scored.filter(t => {
     const tab = tabs.find(x => x.id === t.id);
     if (!tab || tab.active || tab.pinned) return false;
-    const lastActive = activity[t.id] ?? tab.lastAccessed ?? now;
-    return (now - lastActive) >= staleMs;
+    return t.scores.total >= 100;
   });
 
   if (staleTabs.length === 0) return { archived: 0 };
