@@ -48,7 +48,9 @@
     {
       "resources": [
         "suspended.html",
-        "suspended.js"
+        "suspended.js",
+        "archive.html",
+        "archive.js"
       ],
       "matches": [
         "<all_urls>"

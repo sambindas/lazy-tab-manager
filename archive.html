@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tab Archive — Lazy Tab Manager</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 32px 0 60px;
+    }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 { font-size: 22px; color: #e94560; }
+    .page-header p  { font-size: 13px; color: #666; margin-top: 3px; }
+
+    .btn-clear {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      border-radius: 7px;
+      padding: 7px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-clear:hover { border-color: #e94560; color: #e94560; }
+
+    .search-bar {
+      width: 100%;
+      padding: 9px 14px;
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 13px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    .search-bar:focus { border-color: #e94560; }
+    .search-bar::placeholder { color: #444; }
+
+    .archive-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .archive-item {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.15s;
+    }
+    .archive-item:hover { border-color: #e94560; }
+
+    .archive-favicon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border-radius: 3px;
+    }
+
+    .archive-info { flex: 1; overflow: hidden; }
+
+    .archive-title {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #e0e0e0;
+      margin-bottom: 3px;
+    }
+
+    .archive-url {
+      font-size: 11px;
+      color: #555;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .archive-meta {
+      font-size: 11px;
+      color: #444;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .archive-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .btn-restore {
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-restore:hover { background: #c73652; }
+
+    .btn-delete {
+      background: none;
+      border: 1px solid #333;
+      color: #555;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-delete:hover { border-color: #e94560; color: #e94560; }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #444;
+    }
+
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    .count-bar {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1>Tab Archive</h1>
+        <p>Tabs you've archived — restore them any time</p>
+      </div>
+      <button class="btn-clear" id="btn-clear">Clear all</button>
+    </div>
+
+    <input class="search-bar" id="search" type="text" placeholder="Search archived tabs..." />
+
+    <div class="count-bar" id="count-bar"></div>
+
+    <div class="archive-list" id="archive-list">
+      <div class="empty-state">
+        <div class="icon">📦</div>
+        <p>Loading archive...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="archive.js"></script>
+</body>
+</html>
